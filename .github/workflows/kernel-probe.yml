@@ -40,12 +40,12 @@ jobs:
       - name: unixnu defconfig
         run: |
           cd UniXNU
-          ./unixnu defconfig zorn_ios26_defconfig -D "$DEVICE" 2>&1 | tail -20
+          ./unixnu defconfig zorn_ios26_defconfig -D "$DEVICE" --os ios-26.6.2-23G90 2>&1 | tail -20
 
       - name: unixnu fetch
         run: |
           cd UniXNU
-          ./unixnu fetch -D "$DEVICE" 2>&1 | tail -20
+          ./unixnu fetch -D "$DEVICE" --os ios-26.6.2-23G90 2>&1 | tail -20
 
       - name: unixnu status
         run: |
