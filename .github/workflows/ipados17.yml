@@ -37,6 +37,8 @@ jobs:
         run: |
           sed -i '' 's/, "AppleKeyStoreState"//' UniXNU-zorn/board.toml
           sed -i '' '/"component:AppleKeyStoreState",/d' UniXNU-zorn/board.toml
+          sed -i '' 's/component:RamBlock/component:NativeRamBlock/g' UniXNU-zorn/board.toml
+          sed -i '' 's/"RamBlock"/"NativeRamBlock"/g' UniXNU-zorn/board.toml
           grep -n 'AppleKeyStoreState' UniXNU-zorn/board.toml || echo "AppleKeyStoreState removed"
           sed -n '24,28p;66,74p' UniXNU-zorn/board.toml
 
