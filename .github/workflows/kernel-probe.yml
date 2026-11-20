@@ -69,7 +69,12 @@ jobs:
         run: |
           cd UniXNU
           ./unixnu build kernel -D "$DEVICE" --os ios-26.6.2-23G90 > "$GITHUB_WORKSPACE/kernel.log" 2>&1 || true
-          tail -60 "$GITHUB_WORKSPACE/kernel.log" || true
+          tail -40 "$GITHUB_WORKSPACE/kernel.log" || true
+          for f in UniXNU/out/zorn/*/*/logs/*.log; do
+            [ -f "$f" ] || continue
+            echo "===== $f (tail 60) ====="
+            tail -60 "$f"
+          done
           echo "=== logs dir ==="
           ls -R "$GITHUB_WORKSPACE/UniXNU/out" 2>/dev/null | head -40 || true
           echo "=== macho ==="
