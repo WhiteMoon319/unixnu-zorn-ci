@@ -33,6 +33,12 @@ jobs:
           git clone --depth 1 https://github.com/kerrinz/UniXNU-zorn.git UniXNU-zorn
           git clone --depth 1 https://github.com/kerrinz/uefi-zorn.git uefi-zorn
 
+      - name: relax device root-trust switches (offline build)
+        run: |
+          CFG=UniXNU-zorn/configs/zorn_union_defconfig
+          sed -i '' -E 's/^CONFIG_XNU_OWNER_/# &/; s/^CONFIG_XNU_ZORN_VERIFIED_ROOT=/# &/; s/^CONFIG_XNU_VERIFIED_ROOT_/# &/; s/^CONFIG_XNU_TRUST_CACHE_RUNTIME=/# &/' "$CFG"
+          grep -n 'OWNER_\|VERIFIED_ROOT\|TRUST_CACHE' "$CFG" || true
+
       - name: defconfig + fetch
         run: |
           cd UniXNU

@@ -1,0 +1,198 @@
+== submodules /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU
+== tree /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree
+== kernel preflight: 9 selected components - archive inputs present
+== kernel: XNU
+== kernel: prepare XNU d8b80295118e
++ git clone --quiet --shared --no-checkout /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/feeds/xnu-b7545ced /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/xnu-work
+== kernel: patch apple-only-cpu-tunables.patch
+== kernel: patch architectural-timer-entry.patch
+== kernel: patch armvirt-platform-personality.patch
+== kernel: patch cxx-flag-dependencies.patch
+== kernel: patch disabled-deferred-reclaim.patch
+== kernel: patch external-archive-dependencies.patch
+== kernel: patch kernel-sdk-root.patch
+== kernel: patch local-availability.patch
+== kernel: patch mockfs-intermediate-lookup.patch
+== kernel: patch mockfs-memory-device-width.patch
+== kernel: patch mockfs-statfs.patch
+== kernel: patch mockfs-test-file.patch
+== kernel: patch mockfs-typed-allocation.patch
+== kernel: patch native-4k-bootstrap-capacity.patch
+== kernel: patch native-4k-signature-hash-cache.patch
+== kernel: patch native-4k-user-abi.patch
+== kernel: patch native-aes-personality.patch
+== kernel: patch native-arm-pan.patch
+== kernel: patch native-dt-panic-region.patch
+== kernel: patch native-lookup-trace.patch
+== kernel: patch native-priv-work-interval.patch
+== kernel: patch native-quiet-managed-page-report.patch
+== kernel: patch native-smp-secondary.patch
+== kernel: patch native-text-fixup.patch
+== kernel: patch native-trust-cache-runtime.patch
+== kernel: patch native-union-getattrlistbulk.patch
+== kernel: patch native-union-lower-directory.patch
+== kernel: patch native-work-interval-instance.patch
+== kernel: patch native-work-interval-soft-fail.patch
+== kernel: patch native-work-interval-trace.patch
+== kernel: patch non-apple-cache-monitor.patch
+== kernel: patch non-apple-iommu-bootstrap.patch
+== kernel: patch non-apple-pmap-field.patch
+== kernel: patch null-root-media.patch
+== kernel: patch offline-component-load-probes.patch
+== kernel: patch offline-legacy-start.patch
+== kernel: patch offline-native-gpu-broker.patch
+== kernel: patch offline-owner-boot-manifest.patch
+== kernel: patch offline-owner-cache-carrier.patch
+== kernel: patch offline-owner-root-binding-audit.patch
+== kernel: patch offline-owner-root-crypto-probe.patch
+== kernel: patch offline-owner-systemos-mount.patch
+== kernel: patch offline-owner-z-air-init.patch
+== kernel: patch offline-pgz-alignment-probe.patch
+== kernel: patch pgz-aligned-validation.patch
+== kernel: patch public-entitlements-header.patch
+== kernel: patch published-freezer-condition.patch
+== kernel: patch sheng-platform-power.patch
+== kernel: patch source-corecrypto14-bootstrap.patch
+== kernel: patch source-machine-layer.patch
+== kernel: patch source-pthread-bootstrap.patch
+== kernel: patch zzw-native-adreno-sandbox-grant.patch
+== kernel: patch zzwb-native-sandbox-grant-set-properties.patch
+== kernel: patch zzx-pmap-sync-64bit-pa.patch
+== kernel: patch zzy-native-gpu-addon-mount.patch
+== kernel: patch zzy-staged-system-apps.patch
+== kernel: patch zzyb-native-cryptex-os-view.patch
+== kernel: patch zzyc-owner-skip-launch-constraints.patch
+== kernel: patch zzz-boot-progress.patch
+== kernel: patch zzz-zorn-early-bars.patch
+== kernel: patch zzzz-zorn-c-bands.patch
+== kernel: patch zzzzz-zorn-dt-panic.patch
+== kernel: patch zzzzz-zorn-timebase.patch
+== kernel: patch zzzzzz-zorn-vm-bands.patch
+== kernel: patch zzzzzzz-zorn-bsd-stages.patch
+== kernel: patch zzzzzzz-zorn-startup-bands.patch
+== kernel: patch zzzzzzzz-zorn-launch-trace.patch
+== kernel: patch zzzzzzzz-zorn-machload-trace.patch
+== kernel: patch zzzzzzzz-zorn-mount-skip.patch
+== kernel: patch zzzzzzzz-zorn-root-wait.patch
+== kernel: patch zzzzzzzzz-zorn-csblob-trace.patch
+== kernel: patch zzzzzzzzz-zorn-namei-trace.patch
+== kernel: patch zzzzzzzzz-zorn-panic-say.patch
+== kernel: patch zzzzzzzzz-zorn-pmap-trace.patch
+== kernel: patch zzzzzzzzzz-zorn-macr-reenter.patch
+== kernel: patch zzzzzzzzzz-zorn-read-wait.patch
+== kernel: patch zzzzzzzzzz-zorn-rwlock-noref.patch
+== kernel: patch zzzzzzzzzz-zorn-thread-state.patch
+== kernel: patch zzzzzzzzzz-zorn-vmap-trace.patch
+== kernel: patch zzzzzzzzzz-zorn-vnop-read.patch
+== kernel: patch zzzzzzzzzz-zorn-vnrd-trace.patch
+== kernel: patch zzzzzzzzzzz-zorn-map-delete-trace.patch
+== kernel: patch zzzzzzzzzzz-zorn-zalloc-nofail.patch
+== kernel: patch zzzzzzzzzzzz-zorn-pmap-destroy-trace.patch
+== kernel: patch zzzzzzzzzzzz-zorn-stack.patch
+== kernel: patch zzzzzzzzzzzz-zorn-vmap-nosleep.patch
+== kernel: patch zzzzzzzzzzzzz-zorn-local-tlbi.patch
+== kernel: patch zzzzzzzzzzzzz-zorn-pmap-nosleep.patch
+== kernel: patch zzzzzzzzzzzzz-zorn-ufs-call.patch
+== kernel: patch zzzzzzzzzzzzzz-zorn-os-mount.patch
+== kernel: patch zzzzzzzzzzzzzzz-zorn-tret-next.patch
+== kernel: patch zzzzzzzzzzzzzzz-zorn-voucher-nolock.patch
+== kernel: patch zzzzzzzzzzzzzzzz-zorn-tall-trace.patch
+== kernel: patch zzzzzzzzzzzzzzzzz-zorn-tzok-entry.patch
+== kernel: patch zzzzzzzzzzzzzzzzzz-zorn-emok-probe.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzz-zorn-hint-return.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzz-zorn-insert-return.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzz-zorn-log-only.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzz-zorn-panic-log.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzz-zorn-exec-policy-log.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzz-zorn-signature-result.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzz-zorn-trust-observe.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzz-zorn-init-complete.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzz-zorn-user-svc.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-pmgr.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-amfi-worker.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-thread-create-observe.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-copyin-observe.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-user-console.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-sysctl-observe.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-sysctl-dispatch.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-image4-observe.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-user-trace-compact.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-owner-cache-observe.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-systemos-path-observe.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-systemos-path-buffer.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-systemos-mount-printf.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-hash-progress.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-ram-data-mount.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-service-observe.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-display-init-order.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-8g-bootstrap-capacity.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-observer.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-log-snapshot.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-exit-detail.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-observation-window.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-configuration.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-asid-full-invalidate.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-ipc-observer.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-ipc-fixed-log.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-service-observer.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-long-window.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-keystore-state.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-no-transition-wait.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-voucher-lock-restore.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-vnop-read-restore.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-pmap-lock-init-restore.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-rwlock-semantics-restore.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-startup-service-exits.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-rwlock-ui-baseline.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-startup-service-policy.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-user-stacks.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-launchservices.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-service-thread.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-data-permissions-log.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-long-observation.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-launchservices-events.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-data-space.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-kernel-stacks.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-final-snapshot.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-30min-observation.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-backboard-thread.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-gui-runnable-kernel-stacks.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-vm-map-sleepable.patch
+== kernel: patch zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-zorn-touch-runtime-footer.patch
+== kernel: patch xnu-10063.141.1-security-init.patch
+== kernel: patch xnu-10063.141.1-sparse-index.patch
++ python3 /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/scripts/prepare-xnu-source.py
+Restored 26 omitted public headers from Apple; blob hashes verified
+== kernel: bootstrap pass for compile records and kernel headers
++ bash /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/scripts/build-xnu-4k-baseline.sh
+    /bin/ln -sfh ../../../../.cache/fakeroot/usr/local/lib/kernel/liblibfirehose_kernel.a /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/build/firehose/sym/Release-iphoneos/liblibfirehose_kernel.a
+
+Unifdef /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/fakeroot/usr/local/include/kernel/os/firehose_buffer_private.h /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/libdispatch-work/os/firehose_buffer_private.h (in target 'libfirehose_kernel' from project 'libdispatch')
+    cd /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/libdispatch-work
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/unifdef -x 2 -DKERNEL\=1 -DOS_FIREHOSE_SPI\=1 -DOS_VOUCHER_ACTIVITY_SPI_TYPES\=1 -UOS_VOUCHER_ACTIVITY_SPI -o /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/fakeroot/usr/local/include/kernel/os/firehose_buffer_private.h /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/libdispatch-work/os/firehose_buffer_private.h
+
+CompileC /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/build/firehose/obj/libdispatch.build/Release-iphoneos/libfirehose_kernel.build/Objects-normal/arm64/firehose_buffer.o /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/libdispatch-work/src/firehose/firehose_buffer.c normal arm64 c com.apple.compilers.llvm.clang.1_0.compiler (in target 'libfirehose_kernel' from project 'libdispatch')
+    cd /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/libdispatch-work
+    
+    Using response file: /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/build/firehose/obj/libdispatch.build/Release-iphoneos/libfirehose_kernel.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp
+    
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x c -ivfsstatcache /var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/C/com.apple.DeveloperTools/26.6-17F113/Xcode/SDKStatCaches.noindex/iphoneos26.5-23F81a-688ef53f1462e2c8f657fdc38a81448fee66e23052a0157c865c76b268046726.sdkstatcache -target arm64-apple-ios17.0 -fmessage-length\=0 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit\=0 -fno-color-diagnostics -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-return-type -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wno-unused-variable -Wunused-value -Wno-empty-body -Wno-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wno-constant-conversion -Wno-int-conversion -Wno-bool-conversion -Wno-enum-conversion -Wno-float-conversion -Wno-non-literal-null-conversion -Wno-objc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-implicit-fallthrough -isysroot /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk -fstrict-aliasing -Wdeprecated-declarations -Wno-sign-conversion -Wno-infinite-recursion -Wno-comma -Wno-block-capture-autoreleasing -Wno-strict-prototypes -Wno-semicolon-before-method-body -Wno-packed @/Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/build/firehose/obj/libdispatch.build/Release-iphoneos/libfirehose_kernel.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp -MMD -MT dependencies -MF /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/build/firehose/obj/libdispatch.build/Release-iphoneos/libfirehose_kernel.build/Objects-normal/arm64/firehose_buffer.d --serialize-diagnostics /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/build/firehose/obj/libdispatch.build/Release-iphoneos/libfirehose_kernel.build/Objects-normal/arm64/firehose_buffer.dia -c /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/libdispatch-work/src/firehose/firehose_buffer.c -o /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/build/firehose/obj/libdispatch.build/Release-iphoneos/libfirehose_kernel.build/Objects-normal/arm64/firehose_buffer.o
+
+Libtool /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/fakeroot/usr/local/lib/kernel/liblibfirehose_kernel.a normal (in target 'libfirehose_kernel' from project 'libdispatch')
+    cd /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/libdispatch-work
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool -static -arch_only arm64 -D -syslibroot /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk -L/Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/build/firehose/sym/Release-iphoneos -filelist /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/build/firehose/obj/libdispatch.build/Release-iphoneos/libfirehose_kernel.build/Objects-normal/arm64/libfirehose_kernel.LinkFileList -dependency_info /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/build/firehose/obj/libdispatch.build/Release-iphoneos/libfirehose_kernel.build/Objects-normal/arm64/libfirehose_kernel_libtool_dependency_info.dat -o /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/fakeroot/usr/local/lib/kernel/liblibfirehose_kernel.a
+
+SetOwnerAndGroup runner:staff /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/fakeroot/usr/local/lib/kernel/liblibfirehose_kernel.a (in target 'libfirehose_kernel' from project 'libdispatch')
+    cd /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/libdispatch-work
+    /usr/sbin/chown -RH runner:staff /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/fakeroot/usr/local/lib/kernel/liblibfirehose_kernel.a
+
+SetMode u+w,go-w,a+rX /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/fakeroot/usr/local/lib/kernel/liblibfirehose_kernel.a (in target 'libfirehose_kernel' from project 'libdispatch')
+    cd /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/libdispatch-work
+    /bin/chmod -RH u+w,go-w,a+rX /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/tree/.cache/fakeroot/usr/local/lib/kernel/liblibfirehose_kernel.a
+
+warning: Traditional headermap style is no longer supported; please migrate to using separate headermaps and set 'ALWAYS_SEARCH_USER_PATHS' to NO. (in target 'libfirehose_kernel' from project 'libdispatch')
+** INSTALL SUCCEEDED **
+
+Non-fat file: .cache/fakeroot/usr/local/lib/kernel/libfirehose_kernel.a is architecture: arm64
+Owner root acceptance requires actual mounted-media binding and verified block storage
+unixnu: bash failed (1); full log: /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ipados-17.7.11-21H461/zorn_union/logs/kernel-bootstrap.log
