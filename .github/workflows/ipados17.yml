@@ -33,6 +33,13 @@ jobs:
           git clone --depth 1 https://github.com/kerrinz/UniXNU-zorn.git UniXNU-zorn
           git clone --depth 1 https://github.com/kerrinz/uefi-zorn.git uefi-zorn
 
+      - name: drop AppleKeyStoreState component (upstream pin is older)
+        run: |
+          sed -i '' 's/, "AppleKeyStoreState"//' UniXNU-zorn/board.toml
+          sed -i '' '/"component:AppleKeyStoreState",/d' UniXNU-zorn/board.toml
+          grep -n 'AppleKeyStoreState' UniXNU-zorn/board.toml || echo "AppleKeyStoreState removed"
+          sed -n '24,28p;66,74p' UniXNU-zorn/board.toml
+
       - name: relax device root-trust switches (offline build)
         run: |
           CFG=UniXNU-zorn/configs/zorn_union_defconfig
