@@ -56,7 +56,7 @@ jobs:
       - name: fetch IPSW kernelcache (21H461)
         run: |
           cd UniXNU
-          KC=$(./unixnu ipsw -D "$DEVICE" --os "$PROFILE" KernelCache | tail -1)
+          KC=$(./unixnu ipsw fetch KernelCache -D "$DEVICE" --os "$PROFILE" | tail -1)
           echo "KC=$KC"
           ls -l "$KC"
           echo "$KC" > "$GITHUB_WORKSPACE/kc.txt"
