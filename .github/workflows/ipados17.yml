@@ -78,7 +78,7 @@ jobs:
       - name: kernel attempt 2
         run: |
           cd UniXNU
-          ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" > "$GITHUB_WORKSPACE/k2.log" 2>&1 || true
+          ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" --skip-prelink > "$GITHUB_WORKSPACE/k2.log" 2>&1 || true
           tail -30 "$GITHUB_WORKSPACE/k2.log" || true
           echo "=== macho ==="
           find UniXNU/out -name '*.macho' 2>/dev/null | head -10 || true
