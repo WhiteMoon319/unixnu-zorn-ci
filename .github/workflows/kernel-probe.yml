@@ -51,15 +51,17 @@ jobs:
 
       - name: patch SDK with the generated availability.pl
         run: |
-          SDK=$(xcrun --sdk macosx --show-sdk-path)
           PL=$(find UniXNU/out -path '*fakeroot/usr/local/libexec/availability.pl' | head -1)
-          echo "SDK=$SDK"; echo "PL=$PL"
-          if [ -n "$PL" ]; then
-            sudo mkdir -p "$SDK/usr/local/libexec"
-            sudo cp "$PL" "$SDK/usr/local/libexec/availability.pl"
-            sudo chmod 755 "$SDK/usr/local/libexec/availability.pl"
-            ls -l "$SDK/usr/local/libexec/"
-          fi
+          echo "PL=$PL"
+          for sdk in "$(xcrun --sdk macosx --show-sdk-path)" "$(xcrun --sdk iphoneos --show-sdk-path)"; do
+            echo "SDK=$sdk"
+            if [ -n "$PL" ]; then
+              sudo mkdir -p "$sdk/usr/local/libexec"
+              sudo cp "$PL" "$sdk/usr/local/libexec/availability.pl"
+              sudo chmod 755 "$sdk/usr/local/libexec/availability.pl"
+              ls -l "$sdk/usr/local/libexec/" || true
+            fi
+          done
 
       - name: kernel attempt 2
         run: |

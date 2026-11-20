@@ -1,0 +1,37 @@
+== submodules /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU
+== tree /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ios-26.6.2-23G90/zorn_ios26/tree
+== kernel preflight: 0 selected components - archive inputs present
+== kernel: XNU
+== kernel: bootstrap pass for compile records and kernel headers
++ bash /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ios-26.6.2-23G90/zorn_ios26/tree/scripts/build-xnu-4k-baseline.sh
+           FLEX lexer.yy.c
+             LD setsegname
+13 warnings generated.
+             LD kextsymboltool
+             CC parser.o
+       CODESIGN kextsymboltool
+       CODESIGN setsegname
+             CC main.o
+             CC decomment.o
+             CC installfile.o
+             CC mkheaders.o
+             LD installfile
+             LD decomment
+             CC mkioconf.o
+       CODESIGN installfile
+       CODESIGN decomment
+             CC mkmakefile.o
+             CC lexer.yy.o
+/Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ios-26.6.2-23G90/zorn_ios26/tree/.cache/xnu-work/SETUP/config/mkmakefile.c:659:6: warning: variable 'lpos' set but not used [-Wunused-but-set-variable]
+  659 |         int lpos, len = 0; /* dvw: init to 0 */
+      |             ^
+             CC replacecontents.o
+1 warning generated.
+             LD config
+             LD replacecontents
+       CODESIGN config
+       CODESIGN replacecontents
+make[1]: *** [build_setup_bootstrap_DEVELOPMENT^ARM64^BCM2837] Error 2
+make: *** [build] Error 2
+build-xnu-4k-baseline.sh: line 844: make -C .cache/xnu-work "${XNU_BUILD_TARGET:-build}" SDKROOT="${XNU_SDKROOT:-iphoneos}" ARCH_CONFIGS=ARM64 MACHINE_CONFIGS=BCM2837 KERNEL_CONFIGS=DEVELOPMENT ARCH_STRING_FOR_CURRENT_MACHINE_CONFIG="$XNU_ARCH_STRING" LARGE_MEMORY_DEFINE=-UARM_LARGE_MEMORY ARM64_LINK_ADDR=0xfffffff007004000 ARM64_PLKSEG_ADDR=0xfffffff004004000 DEPLOYMENT_TARGET_FLAGS="-miphoneos-version-min=$IOS_VERSION $XNU_TARGET_DEFINE" DEPLOYMENT_LINKER_FLAGS="-Wl,-ios_version_min,$IOS_VERSION" RC_DARWIN_KERNEL_VERSION="$XNU_DARWIN" RC_ProjectSourceVersion="$XNU_VERSION" BUILD_LTO=0 BOUND_CHECKS=0 BUILD_WERROR="${XNU_BUILD_WERROR:-0}" MAKEJOBS=-j"${JOBS:-4}" CFLAGS_EXTRA="$EXTRA_CFLAGS" "${EXTRA_MAKE_ARGS[@]}" ${XNU_HOST_MAKE_ARGS[@]+"${XNU_HOST_MAKE_ARGS[@]}"} OBJROOT="$ROOT/build/xnu/ios-obj" SYMROOT="$ROOT/build/xnu/ios-sym" DSTROOT="$ROOT/build/xnu/ios-dst" failed
+unixnu: bash failed (2); full log: /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ios-26.6.2-23G90/zorn_ios26/logs/kernel-bootstrap.log
