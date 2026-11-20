@@ -90,6 +90,23 @@ jobs:
           echo "=== macho ==="
           find UniXNU/out -name '*.macho' -exec ls -l {} \; 2>/dev/null | head -10 || true
 
+      - name: prelink from the bootstrap kernel (creates kernel/kernel.macho)
+        run: |
+          cd UniXNU
+          KC=$(cat "$GITHUB_WORKSPACE/kc.txt")
+          ./unixnu build prelink -D "$DEVICE" --os "$PROFILE" --kernelcache "$KC" > "$GITHUB_WORKSPACE/p1.log" 2>&1 || true
+          tail -25 "$GITHUB_WORKSPACE/p1.log" || true
+          ls -l UniXNU/out/zorn/*/*/kernel/ 2>/dev/null || true
+
+      - name: kernel attempt 3 (archives can now read kernel.macho)
+        run: |
+          cd UniXNU
+          KC=$(cat "$GITHUB_WORKSPACE/kc.txt")
+          ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" --kernelcache "$KC" > "$GITHUB_WORKSPACE/k3.log" 2>&1 || true
+          tail -30 "$GITHUB_WORKSPACE/k3.log" || true
+          echo "=== macho ==="
+          find UniXNU/out -name '*.macho' -exec ls -l {} \; 2>/dev/null | head -10 || true
+
       - name: artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -98,6 +115,8 @@ jobs:
           path: |
             k1.log
             k2.log
+            p1.log
+            k3.log
             kc.txt
             UniXNU/out/zorn/**/logs/**
             UniXNU/out/zorn/**/kernel/*.macho
