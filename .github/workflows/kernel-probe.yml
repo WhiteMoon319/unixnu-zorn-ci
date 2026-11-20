@@ -8,15 +8,17 @@ on:
 jobs:
   probe:
     runs-on: macos-latest
-    timeout-minutes: 180
+    timeout-minutes: 240
     env:
       DEVICE: ${{ github.workspace }}/UniXNU-zorn
+      PROFILE: ios-26.6.2-23G90
+      CONFIG: zorn_ios26
     steps:
       - name: runner info
         run: |
           sw_vers
-          xcodebuild -version || true
-          xcrun --sdk iphoneos --show-sdk-version || true
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
 
       - name: checkout UniXNU
         uses: actions/checkout@v4
@@ -29,53 +31,43 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/kerrinz/UniXNU-zorn.git UniXNU-zorn
           git clone --depth 1 https://github.com/kerrinz/uefi-zorn.git uefi-zorn
-          ls UniXNU-zorn/configs
 
       - name: install device OS profile into upstream
         run: |
           mkdir -p UniXNU/profiles/os
           cp -r UniXNU-zorn/profiles/os/. UniXNU/profiles/os/
-          ls UniXNU/profiles/os
 
-      - name: unixnu defconfig
+      - name: defconfig + fetch
         run: |
           cd UniXNU
-          ./unixnu defconfig zorn_ios26_defconfig -D "$DEVICE" --os ios-26.6.2-23G90 2>&1 | tail -20
+          ./unixnu defconfig zorn_ios26_defconfig -D "$DEVICE" --os "$PROFILE"
+          ./unixnu fetch -D "$DEVICE" --os "$PROFILE" 2>&1 | tail -10
 
-      - name: unixnu fetch
+      - name: kernel attempt 1 (expected: availability.pl not in SDK)
         run: |
           cd UniXNU
-          ./unixnu fetch -D "$DEVICE" --os ios-26.6.2-23G90 2>&1 | tail -20
+          ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" > "$GITHUB_WORKSPACE/k1.log" 2>&1 || true
+          tail -15 "$GITHUB_WORKSPACE/k1.log" || true
 
-      - name: unixnu status
+      - name: patch SDK with the generated availability.pl
+        run: |
+          SDK=$(xcrun --sdk macosx --show-sdk-path)
+          PL=$(find UniXNU/out -path '*fakeroot/usr/local/libexec/availability.pl' | head -1)
+          echo "SDK=$SDK"; echo "PL=$PL"
+          if [ -n "$PL" ]; then
+            sudo mkdir -p "$SDK/usr/local/libexec"
+            sudo cp "$PL" "$SDK/usr/local/libexec/availability.pl"
+            sudo chmod 755 "$SDK/usr/local/libexec/availability.pl"
+            ls -l "$SDK/usr/local/libexec/"
+          fi
+
+      - name: kernel attempt 2
         run: |
           cd UniXNU
-          ./unixnu status -D "$DEVICE" --os ios-26.6.2-23G90 --json > "$GITHUB_WORKSPACE/status.json" || true
-          python3 - "$GITHUB_WORKSPACE/status.json" <<'PY'
-          import json, sys
-          try:
-              d = json.load(open(sys.argv[1]))
-          except Exception as e:
-              print('status parse failed:', e); raise SystemExit(0)
-          print('configured:', d.get('configured'), '| config:', d.get('configuration'))
-          print('patch_order:', len(d.get('patch_order', [])))
-          b = d.get('board', {})
-          print('board keys:', sorted(b.keys()))
-          print('kernel:', b.get('kernel'))
-          print('prelink:', b.get('kernel', {}).get('prelink') if isinstance(b.get('kernel'), dict) else None)
-          PY
-
-      - name: kernel build attempt
-        run: |
-          cd UniXNU
-          ./unixnu build kernel -D "$DEVICE" --os ios-26.6.2-23G90 > "$GITHUB_WORKSPACE/kernel.log" 2>&1 || true
-          tail -40 "$GITHUB_WORKSPACE/kernel.log" || true
-          echo "===== kernel-bootstrap.log (tail 80) ====="
-          tail -80 UniXNU/out/zorn/ios-26.6.2-23G90/zorn_ios26/logs/kernel-bootstrap.log || true
-          echo "=== logs dir ==="
-          ls -R "$GITHUB_WORKSPACE/UniXNU/out" 2>/dev/null | head -40 || true
+          ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" > "$GITHUB_WORKSPACE/k2.log" 2>&1 || true
+          tail -40 "$GITHUB_WORKSPACE/k2.log" || true
           echo "=== macho ==="
-          find "$GITHUB_WORKSPACE/UniXNU/out" -name '*.macho' 2>/dev/null | head -20 || true
+          find UniXNU/out -name '*.macho' -o -name 'mach.*' 2>/dev/null | head -10 || true
 
       - name: artifacts
         if: always()
@@ -83,7 +75,7 @@ jobs:
         with:
           name: zorn-logs
           path: |
-            status.json
-            kernel.log
+            k1.log
+            k2.log
             UniXNU/out/zorn/**/logs/**
           if-no-files-found: warn
