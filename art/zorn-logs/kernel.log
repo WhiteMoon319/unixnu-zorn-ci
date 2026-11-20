@@ -1,0 +1,41 @@
+== submodules /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU
+== tree /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ios-26.6.2-23G90/zorn_ios26/tree
+== kernel preflight: 0 selected components - archive inputs present
+== kernel: XNU
+== kernel: prepare XNU d8b80295118e
++ git clone --quiet --shared --no-checkout /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/feeds/xnu-b7545ced /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ios-26.6.2-23G90/zorn_ios26/tree/.cache/xnu-work
++ python3 /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ios-26.6.2-23G90/zorn_ios26/tree/scripts/prepare-xnu-source.py
+Restored 26 omitted public headers from Apple; blob hashes verified
+== kernel: bootstrap pass for compile records and kernel headers
++ bash /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ios-26.6.2-23G90/zorn_ios26/tree/scripts/build-xnu-4k-baseline.sh
+      |             ^
+             CC main.o
+13 warnings generated.
+             CC setsegname.o
+             LD kextsymboltool
+             CC mkheaders.o
+             LD setsegname
+             CC mkioconf.o
+             CC mkmakefile.o
+/Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ios-26.6.2-23G90/zorn_ios26/tree/.cache/xnu-work/SETUP/config/mkmakefile.c:659:6: warning: variable 'lpos' set but not used [-Wunused-but-set-variable]
+  659 |         int lpos, len = 0; /* dvw: init to 0 */
+      |             ^
+1 warning generated.
+             CC lexer.yy.o
+       CODESIGN setsegname
+             LD config
+       CODESIGN kextsymboltool
+       CODESIGN config
+             CC decomment.o
+             CC installfile.o
+             CC replacecontents.o
+             LD installfile
+             LD decomment
+             LD replacecontents
+       CODESIGN installfile
+       CODESIGN decomment
+       CODESIGN replacecontents
+make[1]: *** [build_setup_bootstrap_DEVELOPMENT^ARM64^BCM2837] Error 2
+make: *** [installhdrs] Error 2
+build-xnu-4k-baseline.sh: line 154: make -C .cache/xnu-work installhdrs SDKROOT=macosx ARCH_CONFIGS=ARM64 MACHINE_CONFIGS=BCM2837 KERNEL_CONFIGS=DEVELOPMENT RC_DARWIN_KERNEL_VERSION="$XNU_DARWIN" RC_ProjectSourceVersion="$XNU_VERSION" MAKEJOBS=-j"${JOBS:-4}" OBJROOT="$ROOT/build/xnu/obj" SYMROOT="$ROOT/build/xnu/sym" DSTROOT="$KERNEL_SDKROOT" ${XNU_HOST_MAKE_ARGS[@]+"${XNU_HOST_MAKE_ARGS[@]}"} failed
+unixnu: bash failed (2); full log: /Users/runner/work/unixnu-zorn-ci/unixnu-zorn-ci/UniXNU/out/zorn/ios-26.6.2-23G90/zorn_ios26/logs/kernel-bootstrap.log
