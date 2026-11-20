@@ -8,18 +8,17 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-    timeout-minutes: 240
+    timeout-minutes: 300
     env:
       DEVICE: ${{ github.workspace }}/UniXNU-zorn
       PROFILE: ipados-17.7.11-21H461
       CONFIG_NAME: zorn_union_defconfig
-      CONFIG: zorn_union
     steps:
       - name: runner info
         run: |
           sw_vers
           xcodebuild -version
-          xcrun --sdk iphoneos --show-sdk-version
+          df -h /
 
       - name: checkout UniXNU
         uses: actions/checkout@v4
@@ -33,33 +32,40 @@ jobs:
           git clone --depth 1 https://github.com/kerrinz/UniXNU-zorn.git UniXNU-zorn
           git clone --depth 1 https://github.com/kerrinz/uefi-zorn.git uefi-zorn
 
-      - name: drop AppleKeyStoreState component (upstream pin is older)
+      - name: install device OS profile into upstream
+        run: |
+          mkdir -p UniXNU/profiles/os
+          cp -r UniXNU-zorn/profiles/os/. UniXNU/profiles/os/
+
+      - name: adapt board.toml to the older upstream pin
         run: |
           sed -i '' 's/, "AppleKeyStoreState"//' UniXNU-zorn/board.toml
           sed -i '' '/"component:AppleKeyStoreState",/d' UniXNU-zorn/board.toml
           sed -i '' 's/, "RamBlock"//' UniXNU-zorn/board.toml
           sed -i '' '/"component:RamBlock",/d' UniXNU-zorn/board.toml
-          grep -n 'AppleKeyStoreState' UniXNU-zorn/board.toml || echo "AppleKeyStoreState removed"
-          sed -n '24,28p;66,74p' UniXNU-zorn/board.toml
-
-      - name: relax device root-trust switches (offline build)
-        run: |
           CFG=UniXNU-zorn/configs/zorn_union_defconfig
           sed -i '' -E 's/^CONFIG_XNU_OWNER_/# &/; s/^CONFIG_XNU_ZORN_VERIFIED_ROOT=/# &/; s/^CONFIG_XNU_VERIFIED_ROOT_/# &/; s/^CONFIG_XNU_TRUST_CACHE_RUNTIME=/# &/' "$CFG"
-          grep -n 'OWNER_\|VERIFIED_ROOT\|TRUST_CACHE' "$CFG" || true
+          echo "--- components ---"; grep -n 'include = ' UniXNU-zorn/board.toml
 
       - name: defconfig + fetch
         run: |
           cd UniXNU
           ./unixnu defconfig "$CONFIG_NAME" -D "$DEVICE" --os "$PROFILE"
-          ./unixnu fetch -D "$DEVICE" --os "$PROFILE" 2>&1 | tail -10
-          ./unixnu status -D "$DEVICE" --os "$PROFILE" --json > "$GITHUB_WORKSPACE/status.json" || true
-          python3 -c "import json;d=json.load(open('$GITHUB_WORKSPACE/status.json'));print('configured',d.get('configured'),'patches',len(d.get('patch_order',[])))" || true
+          ./unixnu fetch -D "$DEVICE" --os "$PROFILE" 2>&1 | tail -5
 
-      - name: kernel attempt 1 (generates availability.pl, expected to fail)
+      - name: fetch IPSW kernelcache (21H461)
         run: |
           cd UniXNU
-          ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" > "$GITHUB_WORKSPACE/k1.log" 2>&1 || true
+          KC=$(./unixnu ipsw -D "$DEVICE" --os "$PROFILE" KernelCache | tail -1)
+          echo "KC=$KC"
+          ls -l "$KC"
+          echo "$KC" > "$GITHUB_WORKSPACE/kc.txt"
+
+      - name: kernel attempt 1 (generates availability.pl; expected to fail)
+        run: |
+          cd UniXNU
+          KC=$(cat "$GITHUB_WORKSPACE/kc.txt")
+          ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" --kernelcache "$KC" > "$GITHUB_WORKSPACE/k1.log" 2>&1 || true
           tail -12 "$GITHUB_WORKSPACE/k1.log" || true
 
       - name: patch availability.pl into both SDKs
@@ -75,13 +81,14 @@ jobs:
             fi
           done
 
-      - name: kernel attempt 2
+      - name: kernel attempt 2 (with kernelcache / prelink)
         run: |
           cd UniXNU
-          ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" --skip-prelink > "$GITHUB_WORKSPACE/k2.log" 2>&1 || true
+          KC=$(cat "$GITHUB_WORKSPACE/kc.txt")
+          ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" --kernelcache "$KC" > "$GITHUB_WORKSPACE/k2.log" 2>&1 || true
           tail -30 "$GITHUB_WORKSPACE/k2.log" || true
           echo "=== macho ==="
-          find UniXNU/out -name '*.macho' 2>/dev/null | head -10 || true
+          find UniXNU/out -name '*.macho' -exec ls -l {} \; 2>/dev/null | head -10 || true
 
       - name: artifacts
         if: always()
@@ -91,6 +98,7 @@ jobs:
           path: |
             k1.log
             k2.log
-            status.json
+            kc.txt
             UniXNU/out/zorn/**/logs/**
+            UniXNU/out/zorn/**/kernel/*.macho
           if-no-files-found: warn
