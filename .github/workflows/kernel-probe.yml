@@ -1,0 +1,82 @@
+name: zorn kernel probe
+
+on:
+  workflow_dispatch:
+    inputs:
+      os_profile:
+        description: "OS profile to resolve"
+        default: "ios-26.6.2-23G90"
+        required: false
+      try_kernel:
+        description: "Also attempt build kernel"
+        default: "false"
+        required: false
+
+jobs:
+  probe:
+    runs-on: macos-latest
+    timeout-minutes: 180
+    steps:
+      - name: Runner / Xcode info
+        run: |
+          sw_vers
+          uname -m
+          xcodebuild -version || true
+          xcrun --sdk iphoneos --show-sdk-version || true
+          xcrun --sdk iphoneos --show-sdk-path || true
+          df -h /
+
+      - name: Checkout UniXNU (pinned)
+        uses: actions/checkout@v4
+        with:
+          repository: UniXNU/UniXNU
+          ref: 630b85a307f19c8d8a4699d5bfc12f6796b874aa
+          path: UniXNU
+          submodules: false
+
+      - name: Checkout UniXNU-zorn
+        uses: actions/checkout@v4
+        with:
+          repository: kerrinz/UniXNU-zorn
+          path: UniXNU-zorn
+
+      - name: Checkout uefi-zorn
+        uses: actions/checkout@v4
+        with:
+          repository: kerrinz/uefi-zorn
+          path: uefi-zorn
+
+      - name: Submodules of UniXNU
+        run: |
+          cd UniXNU
+          git submodule update --init --depth 1 kits/XnuPrelink || true
+          git submodule status | head -20 || true
+
+      - name: unixnu fetch
+        run: |
+          cd UniXNU
+          ./unixnu fetch -D "$GITHUB_WORKSPACE/UniXNU-zorn" 2>&1 | tail -40 || \
+            ./unixnu fetch 2>&1 | tail -40
+
+      - name: unixnu status
+        run: |
+          cd UniXNU
+          ./unixnu status -D "$GITHUB_WORKSPACE/UniXNU-zorn" --os "${{ inputs.os_profile }}" --json > status.json || true
+          head -c 4000 status.json || true
+
+      - name: attempt kernel build
+        if: ${{ inputs.try_kernel == 'true' }}
+        run: |
+          cd UniXNU
+          ./unixnu build kernel -D "$GITHUB_WORKSPACE/UniXNU-zorn" --os "${{ inputs.os_profile }}" 2>&1 | tail -80 || true
+          find . -name 'kernel.macho' -o -name '*.macho' | head -20 || true
+
+      - name: Collect logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zorn-probe-logs
+          path: |
+            UniXNU/status.json
+            UniXNU/out/**/logs/**
+          if-no-files-found: warn
