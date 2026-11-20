@@ -43,7 +43,7 @@ jobs:
           ./unixnu defconfig zorn_ios26_defconfig -D "$DEVICE" --os "$PROFILE"
           ./unixnu fetch -D "$DEVICE" --os "$PROFILE" 2>&1 | tail -10
 
-      - name: kernel attempt 1 (expected: availability.pl not in SDK)
+      - name: "kernel attempt 1 (expected availability.pl missing from SDK)"
         run: |
           cd UniXNU
           ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" > "$GITHUB_WORKSPACE/k1.log" 2>&1 || true
