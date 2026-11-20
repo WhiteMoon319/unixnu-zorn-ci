@@ -1,0 +1,81 @@
+name: zorn-ipados17
+on:
+  push:
+    paths-ignore:
+      - 'README.md'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 240
+    env:
+      DEVICE: ${{ github.workspace }}/UniXNU-zorn
+      PROFILE: ipados-17.7.11-21H461
+      CONFIG_NAME: zorn_union_defconfig
+      CONFIG: zorn_union
+    steps:
+      - name: runner info
+        run: |
+          sw_vers
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+
+      - name: checkout UniXNU
+        uses: actions/checkout@v4
+        with:
+          repository: UniXNU/UniXNU
+          ref: 630b85a307f19c8d8a4699d5bfc12f6796b874aa
+          path: UniXNU
+
+      - name: checkout device repos
+        run: |
+          git clone --depth 1 https://github.com/kerrinz/UniXNU-zorn.git UniXNU-zorn
+          git clone --depth 1 https://github.com/kerrinz/uefi-zorn.git uefi-zorn
+
+      - name: defconfig + fetch
+        run: |
+          cd UniXNU
+          ./unixnu defconfig "$CONFIG_NAME" -D "$DEVICE" --os "$PROFILE"
+          ./unixnu fetch -D "$DEVICE" --os "$PROFILE" 2>&1 | tail -10
+          ./unixnu status -D "$DEVICE" --os "$PROFILE" --json > "$GITHUB_WORKSPACE/status.json" || true
+          python3 -c "import json;d=json.load(open('$GITHUB_WORKSPACE/status.json'));print('configured',d.get('configured'),'patches',len(d.get('patch_order',[])))" || true
+
+      - name: kernel attempt 1 (generates availability.pl, expected to fail)
+        run: |
+          cd UniXNU
+          ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" > "$GITHUB_WORKSPACE/k1.log" 2>&1 || true
+          tail -12 "$GITHUB_WORKSPACE/k1.log" || true
+
+      - name: patch availability.pl into both SDKs
+        run: |
+          PL=$(find UniXNU/out -path '*fakeroot/usr/local/libexec/availability.pl' | head -1)
+          echo "PL=$PL"
+          for sdk in "$(xcrun --sdk macosx --show-sdk-path)" "$(xcrun --sdk iphoneos --show-sdk-path)"; do
+            echo "SDK=$sdk"
+            if [ -n "$PL" ]; then
+              sudo mkdir -p "$sdk/usr/local/libexec"
+              sudo cp "$PL" "$sdk/usr/local/libexec/availability.pl"
+              sudo chmod 755 "$sdk/usr/local/libexec/availability.pl"
+            fi
+          done
+
+      - name: kernel attempt 2
+        run: |
+          cd UniXNU
+          ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" > "$GITHUB_WORKSPACE/k2.log" 2>&1 || true
+          tail -30 "$GITHUB_WORKSPACE/k2.log" || true
+          echo "=== macho ==="
+          find UniXNU/out -name '*.macho' 2>/dev/null | head -10 || true
+
+      - name: artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zorn-ipados17-logs
+          path: |
+            k1.log
+            k2.log
+            status.json
+            UniXNU/out/zorn/**/logs/**
+          if-no-files-found: warn
