@@ -1,26 +1,42 @@
 #!/bin/bash
 # Prepare UniXNU-zorn/board.toml for the older UniXNU pin used in CI.
-# Usage: prep.sh <device_dir> [full|lean]
-#   lean  - also drop the archive builders that read kernel/kernel.macho
-#           (they can only run after a link/prelink produced it)
+#   full  - only drop components unknown to UniXNU@630b85a
+#   lean  - keep a minimal archive list that does not read kernel/kernel.macho
+#           (those builders can only run after a link/prelink produced it)
 set -eu
 DEV=${1:?device dir}
 MODE=${2:-full}
 B="$DEV/board.toml"
 
+python3 - "$B" "$MODE" <<'PY'
+import re
+import sys
+
+path, mode = sys.argv[1], sys.argv[2]
+text = open(path, encoding='utf-8').read()
+
 # components unknown to UniXNU@630b85a
-sed -i '' 's/, "AppleKeyStoreState"//' "$B"
-sed -i '' '/"component:AppleKeyStoreState",/d' "$B"
-sed -i '' 's/, "RamBlock"//' "$B"
-sed -i '' '/"component:RamBlock",/d' "$B"
+text = text.replace(', "AppleKeyStoreState"', '')
+text = text.replace(', "RamBlock"', '')
+text = re.sub(r'\n\s*"component:AppleKeyStoreState",', '', text)
+text = re.sub(r'\n\s*"component:RamBlock",', '', text)
 
-if [ "$MODE" = "lean" ]; then
-  sed -i '' '/"build-zorn-aes.py",/d' "$B"
-  sed -i '' '/"build-zorn-verified-root.py",/d' "$B"
-  sed -i '' '/"build-zorn-ufs.py",/d' "$B"
-  sed -i '' '/"build-zorn-data.py",/d' "$B"
-  sed -i '' '/"build-zorn-link-stubs.py",/d' "$B"
-fi
+if mode == 'lean':
+    minimal = '''archives = [
+  "build-corecrypto-14.py",
+  "build-corecrypto-14.py --namespace",
+  "component:ArmDTPlatform",
+  "component:ArmCpu",
+  "component:SoftwareAES",
+  "build-zorn-cpu.py",
+]'''
+    text, n = re.subn(r'archives = \[[^\]]*\]', minimal, text, count=1)
+    if n != 1:
+        raise SystemExit('archives array not found')
 
-echo "--- board.toml mode=$MODE ---"
+open(path, 'w', encoding='utf-8').write(text)
+print(f'board.toml mode={mode} patched')
+PY
+
+echo "--- archives ---"
 sed -n '/^archives = \[/,/^\]/p' "$B"
