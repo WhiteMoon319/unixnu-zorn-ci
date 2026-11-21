@@ -20,6 +20,11 @@ jobs:
           xcodebuild -version
           df -h /
 
+      - name: checkout this repo (for ci/prep.sh)
+        uses: actions/checkout@v4
+        with:
+          path: .
+
       - name: checkout UniXNU
         uses: actions/checkout@v4
         with:
