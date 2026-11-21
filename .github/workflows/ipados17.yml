@@ -37,6 +37,7 @@ jobs:
           git clone --depth 1 https://github.com/kerrinz/UniXNU-zorn.git UniXNU-zorn
           git clone --depth 1 https://github.com/kerrinz/uefi-zorn.git uefi-zorn
           cp UniXNU-zorn/board.toml board.orig.toml
+          cp UniXNU-zorn/configs/zorn_union_defconfig defconfig.orig
 
       - name: install device OS profile into upstream
         run: |
@@ -93,7 +94,13 @@ jobs:
       - name: attempt 3 (full archives with kernel.macho present)
         run: |
           cp board.orig.toml UniXNU-zorn/board.toml
+          cp defconfig.orig UniXNU-zorn/configs/zorn_union_defconfig
+          CFG=UniXNU-zorn/configs/zorn_union_defconfig
+          sed -i '' -E 's/^CONFIG_XNU_OWNER_/# &/; s/^CONFIG_XNU_ZORN_VERIFIED_ROOT=/# &/; s/^CONFIG_XNU_VERIFIED_ROOT_/# &/; s/^CONFIG_XNU_TRUST_CACHE_RUNTIME=/# &/' "$CFG"
           bash ci/prep.sh "$DEVICE" full
+          cd UniXNU
+          ./unixnu defconfig "$CONFIG_NAME" -D "$DEVICE" --os "$PROFILE"
+          cd ..
           cd UniXNU
           KC=$(cat "$GITHUB_WORKSPACE/kc.txt")
           ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" --kernelcache "$KC" > "$GITHUB_WORKSPACE/k3.log" 2>&1 || true

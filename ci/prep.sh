@@ -1,8 +1,9 @@
 #!/bin/bash
-# Prepare UniXNU-zorn/board.toml for the older UniXNU pin used in CI.
+# Prepare UniXNU-zorn for the older UniXNU pin used in CI.
 #   full  - only drop components unknown to UniXNU@630b85a
-#   lean  - keep a minimal archive list that does not read kernel/kernel.macho
-#           (those builders can only run after a link/prelink produced it)
+#   lean  - first-pass shape: drop the device archive builders AND the
+#           CONFIG_XNU_*_ARCHIVE variables, so XNU can link once and produce
+#           the kernel that the device builders need as an input.
 set -eu
 DEV=${1:?device dir}
 MODE=${2:-full}
@@ -15,7 +16,6 @@ import sys
 path, mode = sys.argv[1], sys.argv[2]
 text = open(path, encoding='utf-8').read()
 
-# components unknown to UniXNU@630b85a
 text = text.replace(', "AppleKeyStoreState"', '')
 text = text.replace(', "RamBlock"', '')
 text = re.sub(r'\n\s*"component:AppleKeyStoreState",', '', text)
@@ -37,6 +37,13 @@ if mode == 'lean':
 open(path, 'w', encoding='utf-8').write(text)
 print(f'board.toml mode={mode} patched')
 PY
+
+CFG="$DEV/configs/zorn_union_defconfig"
+if [ "$MODE" = "lean" ]; then
+  sed -i '' -E 's/^CONFIG_XNU_[A-Z0-9_]*ARCHIVE=/# &/' "$CFG"
+  echo "--- archive vars ---"
+  grep -n 'ARCHIVE' "$CFG" || true
+fi
 
 echo "--- archives ---"
 sed -n '/^archives = \[/,/^\]/p' "$B"
