@@ -41,6 +41,7 @@ PY
 CFG="$DEV/configs/zorn_union_defconfig"
 if [ "$MODE" = "lean" ]; then
   sed -i '' -E 's/^CONFIG_XNU_[A-Z0-9_]*ARCHIVE=/# &/' "$CFG"
+  sed -i '' -E 's/^CONFIG_XNU_(NATIVE_|SOURCE_|VERIFIED_|OWNER_|ZORN_)/# &/' "$CFG"
   echo "--- archive vars ---"
   grep -n 'ARCHIVE' "$CFG" || true
 fi
