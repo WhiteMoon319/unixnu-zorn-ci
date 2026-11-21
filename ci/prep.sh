@@ -30,6 +30,7 @@ if mode == 'lean':
   "component:SoftwareAES",
   "build-zorn-cpu.py",
   "build-libpthread-kernel.py",
+  "build-zorn-link-stubs.py",
 ]'''
     text, n = re.subn(r'archives = \[[^\]]*\]', minimal, text, count=1)
     if n != 1:
