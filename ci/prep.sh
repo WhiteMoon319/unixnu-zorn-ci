@@ -1,11 +1,11 @@
 #!/bin/bash
 # Prepare UniXNU-zorn for the older UniXNU pin used in CI.
 #   full  - drop only the components unknown to UniXNU@630b85a
-#   lean  - first-pass shape: a bare kernel that links without any device
-#           archive, so prelink can produce kernel/kernel.macho. The device
-#           builders (zorn-aes/ufs/display/data/verified-root) read that file
-#           and their outputs are also link inputs, so a from-scratch build
-#           otherwise deadlocks.
+#   lean  - first-pass shape: keep the archives that build without a previous
+#           kernel (corecrypto, arm platform experts, cpu, pthread, link stubs)
+#           and drop everything whose builder reads kernel/kernel.macho.
+#           Those builders are also link inputs, so a from-scratch build would
+#           otherwise deadlock on the missing prelinked kernel.
 set -eu
 DEV=${1:?device dir}
 MODE=${2:-full}
@@ -25,11 +25,18 @@ text = re.sub(r'\n\s*"component:AppleKeyStoreState",', '', text)
 text = re.sub(r'\n\s*"component:RamBlock",', '', text)
 
 if mode == 'lean':
-    text, n = re.subn(r'archives = \[[^\]]*\]', 'archives = [\n]', text, count=1)
+    minimal = '''archives = [
+  "build-corecrypto-14.py",
+  "build-corecrypto-14.py --namespace",
+  "component:ArmDTPlatform",
+  "component:ArmCpu",
+  "component:SoftwareAES",
+  "build-zorn-cpu.py",
+  "build-libpthread-kernel.py",
+]'''
+    text, n = re.subn(r'archives = \[[^\]]*\]', lambda m: minimal, text, count=1)
     if n != 1:
         raise SystemExit('archives array not found')
-    # Device features arrive through the board fragments as well as the
-    # defconfig, so clear both for the bare pass.
     text, m = re.subn(r'config_fragments = \[[^\]]*\]', 'config_fragments = []', text, count=1)
     print(f'cleared config_fragments: {m}')
 
@@ -38,7 +45,9 @@ print(f'board.toml mode={mode} patched')
 PY
 
 if [ "$MODE" = "lean" ]; then
-  sed -i '' -E 's/^(CONFIG_XNU_)/# \1/' "$CFG"
+  # keep: SOURCE_CORECRYPTO14, SOURCE_PTHREAD, ARM_DT_PLATFORM, ARMCPU, page size
+  sed -i '' -E 's/^CONFIG_XNU_(NATIVE_|ZORN_|VERIFIED_|OWNER_|EXTRA_LD_)/# \1/' "$CFG"
+  sed -i '' -E 's/^(CONFIG_XNU_[A-Z0-9_]*ARCHIVE=)/# \1/' "$CFG"
   echo "--- remaining CONFIG lines ---"
   grep -n '^CONFIG' "$CFG" || true
 fi
