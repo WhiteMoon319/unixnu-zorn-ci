@@ -29,6 +29,7 @@ if mode == 'lean':
   "component:ArmCpu",
   "component:SoftwareAES",
   "build-zorn-cpu.py",
+  "build-libpthread-kernel.py",
 ]'''
     text, n = re.subn(r'archives = \[[^\]]*\]', minimal, text, count=1)
     if n != 1:
@@ -41,7 +42,7 @@ PY
 CFG="$DEV/configs/zorn_union_defconfig"
 if [ "$MODE" = "lean" ]; then
   sed -i '' -E 's/^CONFIG_XNU_[A-Z0-9_]*ARCHIVE=/# &/' "$CFG"
-  sed -i '' -E 's/^CONFIG_XNU_(NATIVE_|SOURCE_|VERIFIED_|OWNER_|ZORN_)/# &/' "$CFG"
+  sed -i '' -E 's/^CONFIG_XNU_(NATIVE_|VERIFIED_|OWNER_|ZORN_)/# &/' "$CFG"
   echo "--- archive vars ---"
   grep -n 'ARCHIVE' "$CFG" || true
 fi
