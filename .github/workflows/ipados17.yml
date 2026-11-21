@@ -31,21 +31,18 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/kerrinz/UniXNU-zorn.git UniXNU-zorn
           git clone --depth 1 https://github.com/kerrinz/uefi-zorn.git uefi-zorn
+          cp UniXNU-zorn/board.toml board.orig.toml
 
       - name: install device OS profile into upstream
         run: |
           mkdir -p UniXNU/profiles/os
           cp -r UniXNU-zorn/profiles/os/. UniXNU/profiles/os/
 
-      - name: adapt board.toml to the older upstream pin
+      - name: adapt config switches
         run: |
-          sed -i '' 's/, "AppleKeyStoreState"//' UniXNU-zorn/board.toml
-          sed -i '' '/"component:AppleKeyStoreState",/d' UniXNU-zorn/board.toml
-          sed -i '' 's/, "RamBlock"//' UniXNU-zorn/board.toml
-          sed -i '' '/"component:RamBlock",/d' UniXNU-zorn/board.toml
           CFG=UniXNU-zorn/configs/zorn_union_defconfig
           sed -i '' -E 's/^CONFIG_XNU_OWNER_/# &/; s/^CONFIG_XNU_ZORN_VERIFIED_ROOT=/# &/; s/^CONFIG_XNU_VERIFIED_ROOT_/# &/; s/^CONFIG_XNU_TRUST_CACHE_RUNTIME=/# &/' "$CFG"
-          echo "--- components ---"; grep -n 'include = ' UniXNU-zorn/board.toml
+          bash ci/prep.sh "$DEVICE" lean
 
       - name: defconfig + fetch
         run: |
@@ -57,23 +54,21 @@ jobs:
         run: |
           cd UniXNU
           KC=$(./unixnu ipsw fetch KernelCache -D "$DEVICE" --os "$PROFILE" | tail -1)
-          echo "KC=$KC"
-          ls -l "$KC"
+          echo "KC=$KC"; ls -l "$KC"
           echo "$KC" > "$GITHUB_WORKSPACE/kc.txt"
 
-      - name: kernel attempt 1 (generates availability.pl; expected to fail)
+      - name: attempt 1 (bootstrap; expected to stop at availability.pl)
         run: |
           cd UniXNU
           KC=$(cat "$GITHUB_WORKSPACE/kc.txt")
           ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" --kernelcache "$KC" > "$GITHUB_WORKSPACE/k1.log" 2>&1 || true
-          tail -12 "$GITHUB_WORKSPACE/k1.log" || true
+          tail -8 "$GITHUB_WORKSPACE/k1.log" || true
 
       - name: patch availability.pl into both SDKs
         run: |
           PL=$(find UniXNU/out -path '*fakeroot/usr/local/libexec/availability.pl' | head -1)
           echo "PL=$PL"
           for sdk in "$(xcrun --sdk macosx --show-sdk-path)" "$(xcrun --sdk iphoneos --show-sdk-path)"; do
-            echo "SDK=$sdk"
             if [ -n "$PL" ]; then
               sudo mkdir -p "$sdk/usr/local/libexec"
               sudo cp "$PL" "$sdk/usr/local/libexec/availability.pl"
@@ -81,29 +76,23 @@ jobs:
             fi
           done
 
-      - name: kernel attempt 2 (with kernelcache / prelink)
+      - name: attempt 2 (lean archives -> link -> kernel.macho)
         run: |
           cd UniXNU
           KC=$(cat "$GITHUB_WORKSPACE/kc.txt")
           ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" --kernelcache "$KC" > "$GITHUB_WORKSPACE/k2.log" 2>&1 || true
-          tail -30 "$GITHUB_WORKSPACE/k2.log" || true
-          echo "=== macho ==="
-          find UniXNU/out -name '*.macho' -exec ls -l {} \; 2>/dev/null | head -10 || true
-
-      - name: prelink from the bootstrap kernel (creates kernel/kernel.macho)
-        run: |
-          cd UniXNU
-          KC=$(cat "$GITHUB_WORKSPACE/kc.txt")
-          ./unixnu build prelink -D "$DEVICE" --os "$PROFILE" --kernelcache "$KC" > "$GITHUB_WORKSPACE/p1.log" 2>&1 || true
-          tail -25 "$GITHUB_WORKSPACE/p1.log" || true
+          tail -20 "$GITHUB_WORKSPACE/k2.log" || true
+          echo "=== kernel dir ==="
           ls -l UniXNU/out/zorn/*/*/kernel/ 2>/dev/null || true
 
-      - name: kernel attempt 3 (archives can now read kernel.macho)
+      - name: attempt 3 (full archives with kernel.macho present)
         run: |
+          cp board.orig.toml UniXNU-zorn/board.toml
+          bash ci/prep.sh "$DEVICE" full
           cd UniXNU
           KC=$(cat "$GITHUB_WORKSPACE/kc.txt")
           ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" --kernelcache "$KC" > "$GITHUB_WORKSPACE/k3.log" 2>&1 || true
-          tail -30 "$GITHUB_WORKSPACE/k3.log" || true
+          tail -25 "$GITHUB_WORKSPACE/k3.log" || true
           echo "=== macho ==="
           find UniXNU/out -name '*.macho' -exec ls -l {} \; 2>/dev/null | head -10 || true
 
@@ -115,7 +104,6 @@ jobs:
           path: |
             k1.log
             k2.log
-            p1.log
             k3.log
             kc.txt
             UniXNU/out/zorn/**/logs/**
