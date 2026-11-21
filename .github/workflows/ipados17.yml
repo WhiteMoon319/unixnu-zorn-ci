@@ -82,13 +82,29 @@ jobs:
             fi
           done
 
-      - name: attempt 2 (lean archives -> link -> kernel.macho)
+      - name: attempt 2 (bootstrap only; stops before the device archives)
         run: |
           cd UniXNU
           KC=$(cat "$GITHUB_WORKSPACE/kc.txt")
           ./unixnu build kernel -D "$DEVICE" --os "$PROFILE" --kernelcache "$KC" > "$GITHUB_WORKSPACE/k2.log" 2>&1 || true
-          tail -20 "$GITHUB_WORKSPACE/k2.log" || true
-          echo "=== kernel dir ==="
+          tail -12 "$GITHUB_WORKSPACE/k2.log" || true
+
+      - name: manual link pass (no device archives) -> native kernel
+        run: |
+          TREE=$(ls -d UniXNU/out/zorn/*/zorn_union/tree)
+          echo "TREE=$TREE"
+          cd "$TREE"
+          env -u EXTRA_MAKE_ARGS -u KERNEL_EXTRA_ARCHIVES -u UNIXNU_PATCH_LIST \
+            bash scripts/build-xnu-4k-baseline.sh > "$GITHUB_WORKSPACE/link.log" 2>&1 || true
+          tail -25 "$GITHUB_WORKSPACE/link.log" || true
+          ls -l build/xnu/ios-obj/DEVELOPMENT_ARM64_BCM2837/*.noctf 2>/dev/null || true
+
+      - name: prelink the native kernel -> kernel/kernel.macho
+        run: |
+          cd UniXNU
+          KC=$(cat "$GITHUB_WORKSPACE/kc.txt")
+          ./unixnu build prelink -D "$DEVICE" --os "$PROFILE" --kernelcache "$KC" > "$GITHUB_WORKSPACE/p1.log" 2>&1 || true
+          tail -20 "$GITHUB_WORKSPACE/p1.log" || true
           ls -l UniXNU/out/zorn/*/*/kernel/ 2>/dev/null || true
 
       - name: attempt 3 (full archives with kernel.macho present)
@@ -116,6 +132,8 @@ jobs:
           path: |
             k1.log
             k2.log
+            link.log
+            p1.log
             k3.log
             kc.txt
             UniXNU/out/zorn/**/logs/**
